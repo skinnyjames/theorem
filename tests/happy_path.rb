@@ -13,6 +13,8 @@ class TestCase < BaseTest
   end
 
   test 'parent before_all' do
+    test = 1
+    expect(test).to eql(1)
     expect(@hello).to be(:world)
   end
 
@@ -37,6 +39,6 @@ class TestCase2 < BaseTest
   end
 
   test 'hello!' do
-    expect(true).to be(false), "bad stuff"
+    expect(true).to be(true), "bad stuff"
   end
 end

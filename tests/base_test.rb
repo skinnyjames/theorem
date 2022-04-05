@@ -1,9 +1,10 @@
 require_relative '../src/hypothesis'
 require 'rspec/expectations'
+require 'watir'
 
 # base test
 class BaseTest
-  include Hypothesis
+  include Theorem::Hypothesis
   include RSpec::Matchers
 
   before_all do
