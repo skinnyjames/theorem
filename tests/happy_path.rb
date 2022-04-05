@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
-require_relative '../src/hypothesis'
-require 'rspec/expectations'
+require_relative './base_test'
 
 # test case
-class TestCase
-  include Hypothesis
-  include RSpec::Matchers
-
+class TestCase < BaseTest
   before_all do
     @blue = true
   end
@@ -25,6 +21,13 @@ class TestCase
   end
 end
 
-puts TestCase.tests
+class TestCase2 < BaseTest
+  before_all do
+    @red = true
+  end
 
-TestCase.run!
+  test '#before_all will not leak state' do
+    expect(@red).to eql(true)
+    expect(@blue).to eql(nil)
+  end
+end

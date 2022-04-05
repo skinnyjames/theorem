@@ -3,6 +3,14 @@
 # entrypoint
 module Hypothesis
   # beaker
+  def self.registry
+    @registry ||= []
+  end
+
+  def self.add_to_registry(klass)
+    registry << klass
+  end
+
   class Beaker
     def initialize
       @state = []
@@ -45,10 +53,16 @@ module Hypothesis
       @errors = []
       @self = new
     end
+    Hypothesis.add_to_registry(klass)
   end
 
   # module
   module ClassMethods
+    def inherited(klass)
+      klass.include(Hypothesis)
+      super
+    end
+
     def before_all(&block)
       @beaker.prepare(&block)
     end
