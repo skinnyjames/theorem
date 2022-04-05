@@ -5,4 +5,8 @@ require 'rspec/expectations'
 class BaseTest
   include Hypothesis
   include RSpec::Matchers
+
+  before_all do
+    @hello = :world
+  end
 end

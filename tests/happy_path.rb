@@ -12,6 +12,10 @@ class TestCase < BaseTest
     expect(@blue).to eql(true)
   end
 
+  test 'parent before_all' do
+    expect(@hello).to be(:world)
+  end
+
   test 'methods' do
     expect(user).to eql({ one: 1, two: 2 })
   end
@@ -21,6 +25,7 @@ class TestCase < BaseTest
   end
 end
 
+# test case
 class TestCase2 < BaseTest
   before_all do
     @red = true
@@ -29,5 +34,9 @@ class TestCase2 < BaseTest
   test '#before_all will not leak state' do
     expect(@red).to eql(true)
     expect(@blue).to eql(nil)
+  end
+
+  test 'hello!' do
+    expect(true).to be(false), "bad stuff"
   end
 end
