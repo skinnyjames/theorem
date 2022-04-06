@@ -2,4 +2,6 @@
 
 require_relative '../src/harness'
 
-Theorem::Hypothesis::Harness.run! ARGV[0] || '.'
+path = ARGV[0] || '.'
+
+Theorem::Hypothesis::Harness.run! path
