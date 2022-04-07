@@ -57,10 +57,12 @@ module Theorem
 
       def run!
         test_case = new
-        @parent_before_all&.each do |beaker|
-          beaker.run!(test_case)
+
+        before_failures = run_before_all_beakers(test_case)
+        if before_failures.any?
+          return before_failures
         end
-        @before_all.run!(test_case)
+
         results = []
         @tests.each do |test|
           error = test.run!(test_case)
@@ -72,6 +74,18 @@ module Theorem
       end
 
       private
+
+      def run_before_all_beakers(test_case)
+        @parent_before_all&.each do |beaker|
+          beaker.run!(test_case)
+        end
+        @before_all.run!(test_case)
+        []
+      rescue Exception => error
+        @tests.map do |test|
+          CompletedTest.new(test.name, error)
+        end
+      end
 
       def publish_test_completion(completed_test)
         control.completed_test_subscribers.each do |subscriber|
