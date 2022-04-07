@@ -5,13 +5,18 @@ module Theorem
   module Control
     # test new
     class Test
-      def initialize(name, **opts, &block)
+      def initialize(name, namespace, **opts, &block)
         @name = name
+        @namespace = namespace
         @block = block
         @arguments = opts
       end
 
-      attr_reader :block, :name, :arguments
+      attr_reader :block, :name, :arguments, :namespace
+
+      def full_name
+        "#{namespace} #{name}"
+      end
 
       def run!(ctx)
         ctx.instance_exec self, **arguments, &block
@@ -62,7 +67,7 @@ module Theorem
       end
 
       def test(name, &block)
-        @tests << Test.new(name, &block)
+        @tests << Test.new(name, to_s, &block)
       end
 
       def run!
@@ -76,7 +81,7 @@ module Theorem
         results = []
         @tests.each do |test|
           error = test.run!(test_case)
-          completed_test = CompletedTest.new(test.name, error)
+          completed_test = CompletedTest.new(test, error)
           publish_test_completion(completed_test)
           results << completed_test
         end
@@ -93,7 +98,7 @@ module Theorem
         []
       rescue Exception => error
         @tests.map do |test|
-          CompletedTest.new(test.name, error)
+          CompletedTest.new(test, error)
         end
       end
 

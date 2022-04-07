@@ -11,7 +11,7 @@ module Theorem
 
       def tests(**opts)
         @tests.map do |hash|
-          Control::Test.new(hash[:name], **opts, &hash[:block])
+          Control::Test.new(hash[:name], to_s, **opts, &hash[:block])
         end
       end
     end
