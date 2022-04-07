@@ -9,9 +9,9 @@ module Theorem
         @tests << { name: name, block: block }
       end
 
-      def tests(**hargs)
+      def tests(**opts)
         @tests.map do |hash|
-          Control::Test.new(hash[:name], **hargs, &hash[:block])
+          Control::Test.new(hash[:name], **opts, &hash[:block])
         end
       end
     end
