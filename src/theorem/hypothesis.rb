@@ -18,6 +18,7 @@ module Theorem
           klass.extend ClassMethods
           klass.instance_eval do
             @before_all ||= Beaker.new
+            @before_each ||= Beaker.new
             @tests = []
             @completed_tests = []
             @self = new
