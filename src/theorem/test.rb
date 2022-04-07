@@ -5,10 +5,10 @@ module Theorem
   module Control
     # test new
     class Test
-      def initialize(name, **hargs, &block)
+      def initialize(name, **opts, &block)
         @name = name
         @block = block
-        @arguments = hargs
+        @arguments = opts
       end
 
       attr_reader :block, :name, :arguments
@@ -40,11 +40,11 @@ module Theorem
         @tags = args
       end
 
-      def experiments(klass, **params, &block)
+      def experiments(klass, **opts, &block)
         obj = Class.new
         obj.include(control)
         obj.instance_eval &block if block
-        obj.instance_exec klass, params do |experiment_klass, params|
+        obj.instance_exec klass, opts do |experiment_klass, params|
           @tests.concat experiment_klass.tests(**params)
         end
       end
