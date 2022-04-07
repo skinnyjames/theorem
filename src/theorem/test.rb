@@ -5,15 +5,16 @@ module Theorem
   module Control
     # test new
     class Test
-      def initialize(name, beaker, &block)
+      def initialize(name, **opts, &block)
         @name = name
         @block = block
+        @arguments = opts
       end
 
-      attr_reader :block, :name
+      attr_reader :block, :name, :arguments
 
       def run!(ctx)
-        ctx.instance_exec self, &block
+        ctx.instance_exec self, **arguments, &block
         nil
       rescue Exception => ex
         ex
@@ -39,6 +40,15 @@ module Theorem
         @tags = args
       end
 
+      def experiments(klass, **opts, &block)
+        obj = Class.new
+        obj.include(control)
+        obj.instance_eval &block if block
+        obj.instance_exec klass, opts do |experiment_klass, params|
+          @tests.concat experiment_klass.tests(**params)
+        end
+      end
+
       def get_tags
         @tags
       end
@@ -52,7 +62,7 @@ module Theorem
       end
 
       def test(name, &block)
-        @tests << Test.new(name, @before_all, &block)
+        @tests << Test.new(name, &block)
       end
 
       def run!
