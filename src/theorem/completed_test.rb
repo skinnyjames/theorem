@@ -4,11 +4,19 @@ module Theorem
   module Control
     # error class
     class CompletedTest
-      attr_reader :name, :error
+      attr_reader :test, :error
 
-      def initialize(name, error = nil)
-        @name = name
+      def initialize(test, error = nil)
+        @test = test
         @error = error
+      end
+
+      def full_name
+        test.full_name
+      end
+
+      def name
+        test.name
       end
 
       def failed?

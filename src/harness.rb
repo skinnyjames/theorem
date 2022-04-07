@@ -25,7 +25,13 @@ module Theorem
 
       def self.report_failures(failed_tests)
         failed_tests.each do |failure|
-          puts "Failure in #{failure.name}\nError: #{failure.error}\nBacktrace:\n------\n#{failure.error.backtrace.join("\n")}"
+          puts "❌ Failure in #{failure.full_name}\nError: #{failure.error}\nBacktrace:\n------\n#{failure.error.backtrace.join("\n")}"
+        end
+      end
+
+      def self.report_passes(passing_tests)
+        passing_tests.each do |pass|
+          puts "✓ #{pass.full_name}"
         end
       end
 
@@ -41,7 +47,9 @@ module Theorem
 
         puts "\n\nSummary\n-------"
 
-        failed_tests = results.select(&:failed?)
+        failed_tests, passed_tests = results.partition(&:failed?)
+
+        report_passes(passed_tests)
         report_failures(failed_tests)
 
         exit failed_tests.any? ? 1 : 0
