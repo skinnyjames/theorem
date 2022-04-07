@@ -33,6 +33,9 @@ module Theorem
         klass.instance_exec self do |me|
           @parent_before_all ||= []
           @parent_before_all << me.before_all_beaker
+
+          @parent_before_each ||= []
+          @parent_before_each << me.before_each_beaker
         end
         super
       end
@@ -41,8 +44,8 @@ module Theorem
         @before_all.prepare(&block)
       end
 
-      def tags(*args)
-        @tags = args
+      def before_each(&block)
+        @before_each.prepare(&block)
       end
 
       def experiments(klass, **opts, &block)
@@ -54,16 +57,16 @@ module Theorem
         end
       end
 
-      def get_tags
-        @tags
-      end
-
       def tests
         @tests
       end
 
       def before_all_beaker
         @before_all
+      end
+
+      def before_each_beaker
+        @before_each
       end
 
       def test(name, &block)
@@ -80,6 +83,9 @@ module Theorem
 
         results = []
         @tests.each do |test|
+          before_each_failures = run_before_each_beakers(test_case)
+          return before_each_failures if before_each_failures.any?
+
           error = test.run!(test_case)
           completed_test = CompletedTest.new(test, error)
           publish_test_completion(completed_test)
@@ -89,6 +95,18 @@ module Theorem
       end
 
       private
+
+      def run_before_each_beakers(test_case)
+        @parent_before_each&.each do |beaker|
+          beaker.run!(test_case)
+        end
+        @before_each.run!(test_case)
+        []
+      rescue Exception => error
+        @tests.map do |test|
+          CompletedTest.new(test, error)
+        end
+      end
 
       def run_before_all_beakers(test_case)
         @parent_before_all&.each do |beaker|

@@ -85,4 +85,36 @@ module Test
       end
     end
   end
+
+  # Before each failures
+  class BeforeEachFailures < Base
+    before_all do
+      @test_class = Class.new do
+        include Fixture
+        include RSpec::Matchers
+
+        before_each do
+          raise StandardError, 'before each error'
+        end
+
+        test 'test 1r' do
+          expect(true).to be(true)
+        end
+
+        test 'test 2' do
+          expect(true).to be(true)
+        end
+      end
+
+      @results = @test_class.run!
+    end
+
+    test 'captures error in before hook' do
+      result_1, result_2 = *@results
+      aggregate_failures do
+        expect(result_2.error.message).to eql('before each error')
+        expect(result_1.error.message).to eql('before each error')
+      end
+    end
+  end
 end
