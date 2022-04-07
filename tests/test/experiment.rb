@@ -30,15 +30,15 @@ module Test
       @baz = :buzz
     end
 
-    experiments OtherExperiments, name: 'ruby' do
-      include RSpec::Matchers
-    end
-
     experiments ExperimentTests, item: true do
       include RSpec::Matchers
       before_all do
         @foo = :baz
       end
+    end
+
+    experiments OtherExperiments, name: 'ruby' do
+      include RSpec::Matchers
     end
   end
 end
