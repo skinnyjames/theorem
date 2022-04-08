@@ -21,6 +21,7 @@ module Test
     test 'does not leak state from prior experiments' do |name:, item: nil|
       expect(name).to eql('ruby')
       expect(item).to be(nil)
+      expect(@foo).to be(nil)
     end
   end
 

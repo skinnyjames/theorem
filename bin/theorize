@@ -1,7 +1,7 @@
 #!/usr/bin/ruby
 
-require_relative '../src/harness'
+require_relative '../src/theorem'
 
 path = ARGV[0] || '.'
 
-Theorem::Hypothesis::Harness.run! path
+Theorem.run! Theorem::Hypothesis, path
