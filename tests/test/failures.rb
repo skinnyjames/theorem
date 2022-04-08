@@ -54,6 +54,63 @@ module Test
     end
   end
 
+  # failure in after each hook
+  class AferEachFailuresOrder1 < Base
+    before_all do
+      test_class = Class.new do
+        include Fixture
+
+        after_each do
+          raise StandardError, 'last error'
+        end
+
+        after_each do
+          nil
+        end
+
+        test 'do the thing' do
+          nil
+        end
+      end
+
+      @results = test_class.run!
+    end
+
+    test 'failures in after each will fail the test' do
+      error = @results[0].error
+      expect(error.message).to eql('last error')
+      expect(error.class).to eql(StandardError)
+    end
+  end
+
+  class AfterEachFailuresOrder2 < Base
+    before_all do
+      test_class = Class.new do
+        include Fixture
+
+        after_each do
+          raise StandardError, 'last error'
+        end
+
+        after_each do
+          raise StandardError, 'first error'
+        end
+
+        test 'do the thing' do
+          nil
+        end
+      end
+
+      @results = test_class.run!
+    end
+
+    test 'failures in after each run in order' do
+      error = @results[0].error
+      expect(error.message).to eql('first error')
+      expect(error.class).to eql(StandardError)
+    end
+  end
+
   # fail before hook
   class BeforeHookFailures < Base
     before_all do

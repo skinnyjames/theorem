@@ -54,6 +54,10 @@ module Theorem
         end
       end
 
+      def reverse_prepare(&block)
+        @state.unshift block
+      end
+
       def prepare(&block)
         @state << block
       end

@@ -5,7 +5,6 @@ require_relative 'base'
 module BeakerTests
   module AroundHooks
     class BasicTest < BeakerTests::BaseTest
-
       around do |test|
         @state = :hello
         expect { test.run! }.to raise_error do |err|
