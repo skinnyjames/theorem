@@ -104,6 +104,8 @@ module Theorem
             test.run!(test_case)
             nil
           rescue Exception => error
+            Theorem.handle_exception(error)
+
             error
           end
         else
@@ -118,6 +120,8 @@ module Theorem
         @before_each.run!(test_case)
         []
       rescue Exception => error
+        Theorem.handle_exception(error)
+
         @tests.map do |test|
           CompletedTest.new(test, error)
         end
@@ -130,6 +134,8 @@ module Theorem
         @before_all.run!(test_case)
         []
       rescue Exception => error
+        Theorem.handle_exception(error)
+
         @tests.map do |test|
           CompletedTest.new(test, error)
         end
