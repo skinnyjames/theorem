@@ -53,20 +53,3 @@ module Theorem
     end
   end
 end
-#
-# module Gitlab
-#   module Tests
-#     include Theorem::Control::Hypothesis
-#     include Theorem::Harness
-#   end
-# end
-#
-# class Test
-#   include Gitlab::Tests
-#
-#   test 'hello' do
-#     raise StandardError, "okay"
-#   end
-# end
-#
-# Gitlab::Tests.run! '.'
