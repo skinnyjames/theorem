@@ -62,7 +62,7 @@ module Test
         include RSpec::Matchers
 
         before_all do
-          raise StandardError, 'before hook error'
+          raise RuntimeError, 'before hook error'
         end
 
         test 'test 1r' do

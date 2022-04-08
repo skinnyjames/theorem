@@ -26,6 +26,8 @@ module Theorem
         ctx.instance_exec flask_test, &@state
         nil
       rescue Exception => error
+        Theorem.handle_exception(error)
+
         error
       end
 
