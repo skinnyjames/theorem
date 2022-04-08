@@ -12,7 +12,9 @@ module Theorem
   end
 
   def self.handle_exception(error)
-    raise error unless error.is_a?(StandardError) || custom_exceptions.include?(error.class)
+    unless error.is_a?(StandardError) || custom_exceptions.include?(error.class)
+      raise error
+    end
   end
 
   module Hypothesis

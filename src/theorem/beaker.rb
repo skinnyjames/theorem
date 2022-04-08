@@ -25,7 +25,7 @@ module Theorem
       def run!(test, ctx, flask_test: FlaskTest.new(test, ctx))
         ctx.instance_exec flask_test, &@state
         nil
-      rescue StandardError => error
+      rescue Exception => error
         Theorem.handle_exception(error)
 
         error
