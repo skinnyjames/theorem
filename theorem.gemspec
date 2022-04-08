@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.7.5'
   s.name        = 'theorem'
-  s.version     = '0.0.1'
+  s.version     = '0.0.2'
   s.licenses    = ['MIT']
   s.summary     = 'simple. testing. ah.'
   s.description = 'simple. testing. ah.'
