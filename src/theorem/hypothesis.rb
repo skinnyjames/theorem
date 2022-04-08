@@ -19,6 +19,7 @@ module Theorem
           klass.instance_eval do
             @before_all ||= Beaker.new
             @before_each ||= Beaker.new
+            @around = Flask.new
             @tests = []
             @completed_tests = []
             @self = new

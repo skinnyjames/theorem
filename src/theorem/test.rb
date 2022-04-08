@@ -20,9 +20,6 @@ module Theorem
 
       def run!(ctx)
         ctx.instance_exec self, **arguments, &block
-        nil
-      rescue Exception => ex
-        ex
       end
     end
 
@@ -42,6 +39,10 @@ module Theorem
 
       def before_all(&block)
         @before_all.prepare(&block)
+      end
+
+      def around(&block)
+        @around.prepare(&block)
       end
 
       def before_each(&block)
@@ -86,7 +87,8 @@ module Theorem
           before_each_failures = run_before_each_beakers(test_case)
           return before_each_failures if before_each_failures.any?
 
-          error = test.run!(test_case)
+          error = run_test(test, test_case)
+
           completed_test = CompletedTest.new(test, error)
           publish_test_completion(completed_test)
           results << completed_test
@@ -95,6 +97,19 @@ module Theorem
       end
 
       private
+
+      def run_test(test, test_case)
+        if @around.empty?
+          begin
+            test.run!(test_case)
+            nil
+          rescue Exception => error
+            error
+          end
+        else
+          @around.run!(test, test_case)
+        end
+      end
 
       def run_before_each_beakers(test_case)
         @parent_before_each&.each do |beaker|
