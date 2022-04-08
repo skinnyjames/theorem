@@ -3,13 +3,16 @@ require_relative 'experiment'
 
 module Theorem
   # RSpec subclasses Exception, so the only way to catch them without a dependency is to catch Exception
-  CUSTOM_EXCEPTIONS = %w[
-    RSpec::Expectations::ExpectationNotMetError
-    RSpec::Expectations::MultipleExpectationsNotMetError
-  ].freeze
+  def self.custom_exceptions
+    errors = []
+    if defined? RSpec::Expectations
+      errors.concat [RSpec::Expectations::ExpectationNotMetError, RSpec::Expectations::MultipleExpectationsNotMetError]
+    end
+    errors
+  end
 
   def self.handle_exception(error)
-    raise error unless error.is_a?(StandardError) || CUSTOM_EXCEPTIONS.include?(error.class.to_s)
+    raise error unless error.is_a?(StandardError) || custom_exceptions.include?(error.class)
   end
 
   module Hypothesis
