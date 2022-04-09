@@ -9,12 +9,12 @@ module BeakerTests
         @foo = :bar
       end
 
-      test 'after each does not leak state' do
-        @foo = :bar
+      test 'after each will have mutated state from the test' do
+        @foo = :baz
       end
 
       after_each do
-        expect(@foo).to eql(:bar)
+        expect(@foo).to eql(:baz)
       end
     end
   end
@@ -25,12 +25,12 @@ module BeakerTests
         @foo = :bar
       end
 
-      test 'after all has mutated data' do
+      test 'after all does not have mutated data from the test' do
         @foo = :baz
       end
 
       after_all do
-        expect(@foo).to eql(:baz)
+        expect(@foo).not_to eql(:baz)
       end
     end
 
@@ -76,8 +76,12 @@ module BeakerTests
         @foo = :baz
       end
 
-      test 'inherited after all hooks run in the reverse order that they are declared' do
+      before_all do
         @foo = :bar
+      end
+
+      test 'inherited after all hooks run in the reverse order that they are declared' do
+        @foo = :hello
       end
     end
   end

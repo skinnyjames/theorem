@@ -9,5 +9,6 @@ module BeakerTests
   class BaseTest
     include Theorem::Hypothesis
     include RSpec::Matchers
+
   end
 end

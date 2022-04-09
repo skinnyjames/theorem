@@ -25,7 +25,7 @@ module BeakerTests
         expect(@state).to eql(:world)
       end
 
-      test 'it can mutate state' do
+      test 'can mutate state' do
         expect(@state).to eql(:hello)
         @state = :world
       end

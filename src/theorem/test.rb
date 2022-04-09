@@ -1,5 +1,6 @@
 # frozen_string_literal: true
 require_relative './beaker'
+require_relative 'notation'
 
 module Theorem
   module Control
@@ -11,12 +12,17 @@ module Theorem
         @block = block
         @arguments = arguments
         @metadata = metadata
+        @notary = Notation.new
       end
 
-      attr_reader :block, :name, :arguments, :namespace, :metadata
+      attr_reader :block, :name, :arguments, :namespace, :metadata, :notary
 
       def full_name
         "#{namespace} #{name}"
+      end
+
+      def notate(&block)
+        block.call(notary)
       end
 
       def run!(ctx)
@@ -100,10 +106,15 @@ module Theorem
       def run!
         test_case = new
 
+        # run before all beakers to create state in test case
         before_failures = run_before_all_beakers(test_case)
+
         if before_failures.any?
           return before_failures
         end
+
+        # duplicate the before_all arrangement for the after all hook
+        duplicate_test_case = test_case.clone
 
         results = []
         @tests.each do |test|
@@ -111,14 +122,22 @@ module Theorem
           error ||= run_test(test, test_case)
           error ||= run_after_each_beakers(test_case)
 
-          completed_test = CompletedTest.new(test, error)
+          notary = test_case.notary.merge(test.notary)
+
+          completed_test = CompletedTest.new(test, error, notary: notary.dump)
           publish_test_completion(completed_test)
           results << completed_test
         end
 
-        after_failures = run_after_all_beakers(test_case)
+        after_failures = run_after_all_beakers(duplicate_test_case)
+
         if after_failures.any?
           return after_failures
+        end
+
+        results.each do |completed_test|
+          # merge any after_all notations
+          completed_test.notary.merge!(duplicate_test_case.notary.dump)
         end
 
         results
@@ -153,7 +172,7 @@ module Theorem
         Theorem.handle_exception(error)
 
         @tests.map do |test|
-          CompletedTest.new(test, error)
+          CompletedTest.new(test, error, notary: test_case.notary)
         end
       end
 
@@ -192,7 +211,7 @@ module Theorem
         Theorem.handle_exception(error)
 
         @tests.map do |test|
-          CompletedTest.new(test, error)
+          CompletedTest.new(test, error, notary: test_case.notary)
         end
       end
 
