@@ -395,6 +395,8 @@ module MyHarness
 
   load_tests do |options|
     registry.each do |test_class|
+      # no procs were harmed in the making of this example
+      # please don't try this at work
       test_class.tests.each do |test|
         test.metadata[:here]&.call("wow") if test.metadata[:data]&.include? :ok
       end
@@ -441,5 +443,56 @@ We can run `theorize --include important` to filter the available test cases thi
 
 You can process tags and additional metadata however you want by writing a harness.
 
-Note: The cli also supports a `--meta` flag to pass an arbitrary string to the harness
+Note: The cli also supports a `--meta` flag to pass an arbitrary string to the harness options
 
+
+#### Notations
+
+Notations are a way to add data throughout the test that a reporter might be interested in.
+
+We can do this from hooks or the test itself by using `#notate`
+
+`notate` yields a `Notation` object that has a few methods
+
+```ruby
+class Test
+  include Theorem::Hypothesis
+  include RSpec::Matchers
+  
+  before_all do
+    notate do |meta|
+      # we can read, write, or edit key value pairs
+      meta.write('before_all', 'Sean was here.')
+    end
+  end
+  
+  before_each do
+    notate do |meta|
+      meta.edit('before_all') do |string|
+        string << " and again!"
+      end
+    end
+  end
+  
+  test 'notation in test must be referenced from the test object' do |this_test|
+    # notate by default will be called on the classes notation 
+    notation = notate do |meta|
+      meta.read('before_all')
+    end
+    
+    expect(notation).to eql('Sean was here. and again!')
+    
+    # call notate on the test object for test specific notations
+    this_test.notate do |meta|
+      meta.write('notation_test', 'only will be for this test')
+    end
+  end
+end
+
+```
+
+When the test emits results to the publisher, the notations will as a hash on the CompletedTest result
+
+We can access them with `result.notary`
+
+**Note:** notations made in an after_all hook will not be available for `on_completed_test` subscriptions.

@@ -15,6 +15,16 @@ module Theorem
             mod
           end
 
+          klass.attr_reader :notary
+
+          klass.define_method :initialize do
+            @notary = Notation.new
+          end
+
+          klass.define_method :notate do |&block|
+            block.call(@notary)
+          end
+
           klass.extend ClassMethods
           klass.instance_eval do
             @before_all ||= Beaker.new
