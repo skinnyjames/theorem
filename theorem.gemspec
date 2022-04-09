@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.7.5'
   s.name        = 'theorem'
-  s.version     = '0.0.2'
+  s.version     = '0.0.3'
   s.licenses    = ['MIT']
   s.summary     = 'simple and extensible test library toolkit'
   s.description = 'simple and extensible test library toolkit'
@@ -10,11 +10,11 @@ Gem::Specification.new do |s|
   s.files       = Dir['src/**/*.rb']
   s.bindir = 'bin'
   s.executables << 'theorize'
-  s.require_paths = ['lib']
+  s.require_paths = ['src']
   s.homepage    = 'https://rubygems.org/gems/theorem'
   s.metadata    = { 'source_code_uri' => 'https://gitlab.com/skinnyjames/theorem' }
-  s.add_dependency 'extended_dir'
-  s.add_dependency 'slop'
+  s.add_dependency 'extended_dir', '~> 0.1.1'
+  s.add_dependency 'slop', '~> 4.9.2'
 
   s.add_development_dependency 'rbs'
   s.add_development_dependency 'rspec-expectations'

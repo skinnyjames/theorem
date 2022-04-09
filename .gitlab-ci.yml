@@ -4,4 +4,4 @@ before_script:
   - bundle install
 
 test:
-  script: bundle exec theorize tests
+  script: bundle exec theorize -d tests
