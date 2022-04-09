@@ -6,7 +6,7 @@ require_relative '../src/theorem'
 opts = Slop.parse do |o|
   o.array '--require', 'files to require', delimiter: ','
   o.string '-m', '--module', 'module (default: Theorem::Hypothesis)', default: 'Theorem::Hypothesis'
-  o.string '-h', '--harness', 'harness (default: Theorem::Hypothesis)', default: 'Theorem::Harness'
+  o.string '-h', '--harness', 'harness (default: Theorem::Harness)', default: 'Theorem::Harness'
   o.array '-p', '--publisher', 'publishers (default: Theorem::StdoutReporter)', delimiter: ',', default: ['Theorem::StdoutReporter']
   o.string '-d', '--directory', 'directory to load tests (default: ".")', default: '.'
   o.on '--help' do
@@ -15,4 +15,4 @@ opts = Slop.parse do |o|
   end
 end
 
-Theorem.run! opts[:directory], opts
+Theorem.run! opts

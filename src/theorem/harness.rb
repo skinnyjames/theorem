@@ -9,8 +9,8 @@ module Theorem
       def self.included(mod)
         mod.extend(ClassMethods)
         mod.define_singleton_method :included do |inner|
-          inner.define_singleton_method :run! do |directory, options = {}|
-            tests = inner.instance_exec directory, options, &mod.test_loader
+          inner.define_singleton_method :run! do |options: {}|
+            tests = inner.instance_exec options, &mod.test_loader
             results = inner.instance_exec tests, options, &mod.run_loader
             inner.completed_suite_subscribers.each do |subscriber|
               subscriber.call(results)
@@ -22,7 +22,9 @@ module Theorem
 
       # harness helpers
       module ClassMethods
-        DEFAULT_LOADER = ->(directory, tags) do
+        DEFAULT_LOADER = ->(options) do
+          directory = options[:directory] || '.'
+
           ExtendedDir.require_all("./#{directory}")
 
           registry

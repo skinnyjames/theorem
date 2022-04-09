@@ -20,7 +20,7 @@ module Theorem
     end
   end
 
-  def self.run!(directory, options)
+  def self.run!(options)
     options[:require].each do |file|
       require file
     end
@@ -40,7 +40,7 @@ module Theorem
       end
     end
 
-    mod.run!(directory, options)
+    mod.run!(options: options)
   end
 
   module JsonReporter
@@ -50,7 +50,7 @@ module Theorem
       results = results.map do |result|
         { name: result.full_name, failed: result.failed? }
       end
-      puts results
+      puts results.to_json
       puts "\n\n"
     end
   end
