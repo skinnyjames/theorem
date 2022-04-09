@@ -63,7 +63,7 @@ module Theorem
 
     def report_failures(tests)
       tests.each do |failure|
-        puts "Failure in #{failure.full_name}\nError: #{failure.error.to_s.red}\nBacktrace:\n------\n#{failure.error.backtrace.map(&:red).join("\n")}"
+        puts "Failure in #{failure.full_name}\nError: #{failure.error.message.to_s.red}\nBacktrace:\n------\n#{failure.error.backtrace.map(&:red).join("\n")}"
       end
     end
   end
