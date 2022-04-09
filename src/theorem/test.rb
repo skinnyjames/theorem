@@ -5,14 +5,15 @@ module Theorem
   module Control
     # test new
     class Test
-      def initialize(name, namespace, **opts, &block)
+      def initialize(name, namespace, arguments: {}, **metadata, &block)
         @name = name
         @namespace = namespace
         @block = block
-        @arguments = opts
+        @arguments = arguments
+        @metadata = metadata
       end
 
-      attr_reader :block, :name, :arguments, :namespace
+      attr_reader :block, :name, :arguments, :namespace, :metadata
 
       def full_name
         "#{namespace} #{name}"
@@ -68,7 +69,7 @@ module Theorem
         obj.include(control)
         obj.instance_eval &block if block
         obj.instance_exec self, klass, opts do |consumer, experiment_klass, params|
-          @tests.concat experiment_klass.tests(_experiment_namespace: consumer.to_s, **params)
+          @tests.concat experiment_klass.tests(_experiment_namespace: consumer.to_s, arguments: params)
         end
       end
 
@@ -92,8 +93,8 @@ module Theorem
         @after_all
       end
 
-      def test(name, &block)
-        @tests << Test.new(name, to_s, &block)
+      def test(name, **hargs, &block)
+        @tests << Test.new(name, to_s, **hargs, &block)
       end
 
       def run!

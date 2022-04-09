@@ -9,10 +9,13 @@ opts = Slop.parse do |o|
   o.string '-h', '--harness', 'harness (default: Theorem::Harness)', default: 'Theorem::Harness'
   o.array '-p', '--publisher', 'publishers (default: Theorem::StdoutReporter)', delimiter: ',', default: ['Theorem::StdoutReporter']
   o.string '-d', '--directory', 'directory to load tests (default: ".")', default: '.'
+  o.array '-i', '--include', 'tags to specify what tests should be included (default: wont filter)', default: []
+  o.array '-e', '--exclude', 'tags the specify what tests should be excluded (default: wont filter)', default: []
+  o.string '--meta', 'string of metadata to pass to the harness', default: ''
   o.on '--help' do
     puts o
     exit
   end
 end
 
-Theorem.run! opts
+Theorem.run! opts.to_h

@@ -2,6 +2,8 @@ require_relative 'theorem/hypothesis'
 require_relative 'harness'
 require_relative 'experiment'
 require_relative 'stdout_reporter'
+
+require_relative 'theorem/harness'
 require 'json'
 
 module Theorem

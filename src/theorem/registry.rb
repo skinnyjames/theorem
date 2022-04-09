@@ -8,6 +8,22 @@ module Theorem
         @registry ||= []
       end
 
+      def filtered_registry(options)
+        registry.each do |test_class|
+          if options[:include]&.any?
+            test_class.tests.select! do |test|
+              test.metadata[:tags]&.intersection(options[:include])&.any?
+            end
+          end
+
+          next unless options[:exclude]&.any?
+
+          test_class.tests.reject! do |test|
+            test.metadata[:tags]&.intersection(options[:include])&.any?
+          end
+        end
+      end
+
       def add_to_registry(klass)
         registry << klass
       end

@@ -76,7 +76,7 @@ module Test
       @results = test_class.run!
     end
 
-    test 'failures in after each will fail the test' do
+    test 'failures in after each will fail the test', tags: %w[focus] do
       error = @results[0].error
       expect(error.message).to eql('last error')
       expect(error.class).to eql(StandardError)
