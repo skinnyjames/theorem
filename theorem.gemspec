@@ -3,8 +3,8 @@ Gem::Specification.new do |s|
   s.name        = 'theorem'
   s.version     = '0.0.2'
   s.licenses    = ['MIT']
-  s.summary     = 'simple. testing. ah.'
-  s.description = 'simple. testing. ah.'
+  s.summary     = 'simple and extensible test library toolkit'
+  s.description = 'simple and extensible test library toolkit'
   s.authors     = ['Sean Gregory']
   s.email       = 'sean.christopher.gregory@gmail.com'
   s.files       = Dir['src/**/*.rb']
@@ -12,11 +12,12 @@ Gem::Specification.new do |s|
   s.executables << 'theorize'
   s.require_paths = ['lib']
   s.homepage    = 'https://rubygems.org/gems/theorem'
-  s.metadata    = { 'source_code_uri' => 'https://github.com/skinnyjames/theorem' }
+  s.metadata    = { 'source_code_uri' => 'https://gitlab.com/skinnyjames/theorem' }
   s.add_dependency 'extended_dir'
+  s.add_dependency 'slop'
+
   s.add_development_dependency 'rbs'
   s.add_development_dependency 'rspec-expectations'
   s.add_development_dependency 'rubocop'
-  s.add_development_dependency 'watir'
   s.add_development_dependency 'parallel'
 end
