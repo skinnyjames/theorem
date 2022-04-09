@@ -6,9 +6,14 @@ module Theorem
     class CompletedTest
       attr_reader :test, :error
 
-      def initialize(test, error = nil)
+      def initialize(test, error = nil, notation: nil)
         @test = test
         @error = error
+        @notation = notation
+      end
+
+      def notations
+        @notation&.dump || {}
       end
 
       def full_name

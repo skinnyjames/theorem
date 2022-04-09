@@ -110,7 +110,7 @@ module Theorem
           error ||= run_test(test, test_case)
           error ||= run_after_each_beakers(test_case)
 
-          completed_test = CompletedTest.new(test, error)
+          completed_test = CompletedTest.new(test, error, notation: test_case.notation)
           publish_test_completion(completed_test)
           results << completed_test
         end

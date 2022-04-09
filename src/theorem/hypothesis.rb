@@ -4,6 +4,7 @@ require_relative 'completed_test'
 require_relative 'beaker'
 require_relative 'registry'
 require_relative 'test'
+require_relative 'notation'
 
 module Theorem
   module Control
@@ -15,6 +16,7 @@ module Theorem
             mod
           end
 
+          klass.include InstanceMethods
           klass.extend ClassMethods
           klass.instance_eval do
             @before_all ||= Beaker.new
@@ -33,6 +35,21 @@ module Theorem
         mod.const_set(:Test, Test)
         mod.const_set(:CompletedTest, CompletedTest)
         mod.extend(Registry)
+      end
+    end
+
+    module InstanceMethods
+      def notate(key, value=nil, &block)
+        @notation ||= Notation.new
+        return @notation.read(key) if value.nil? && block.nil?
+
+        return @notation.write(key, value) if block.nil?
+
+        @notation.edit(key, &block)
+      end
+
+      def notation
+        @notation ||= Notation.new
       end
     end
   end
