@@ -1,59 +1,43 @@
-require_relative './theorem'
-require 'extended_dir'
+# frozen_string_literal: true
 
-# module
+require_relative './theorem/harness'
+require 'parallel'
+
+# harness
 module Theorem
-  # module
-  module Hypothesis
-    on_completed_test do |test|
-      print test.failed? ? 'X' : '.'
+  # default test harness
+  module Harness
+    include Control::Harness
+  end
+
+  # parallel harness
+  module ParallelHarness
+    include Control::Harness
+
+    on_run do |tests|
+      Parallel.map(tests, in_threads: 6, &:run!).flatten
     end
+  end
 
-    # harness
-    class Harness
-      def self.locate_tests(dir)
-        ExtendedDir.require_all("./#{dir}")
+  # module retry harness
+  module RetryHarness
+    include Control::Harness
 
-        Hypothesis.registry
-      end
+    on_run do |tests|
+      arr_of_tests = tests.map { |test| { test: test, index: 0 } }
 
-      def self.get_test_count(test_cases)
-        test_cases.map do |test_case|
-          test_case.tests.size
-        end.inject(&:+)
-      end
-
-      def self.report_failures(failed_tests)
-        failed_tests.each do |failure|
-          puts "❌ Failure in #{failure.full_name}\nError: #{failure.error}\nBacktrace:\n------\n#{failure.error.backtrace.join("\n")}"
+      final_results = []
+      arr_of_tests.each do |test|
+        test[:index] += 1
+        results = test[:test].run!
+        if results.any?(&:failed?) && test[:index] <= 3
+          puts "Retrying iteration: #{test[:index]}\n#{results.map(&:full_name).join("\n")}"
+          redo
         end
+        final_results.concat results
       end
 
-      def self.report_passes(passing_tests)
-        passing_tests.each do |pass|
-          puts "✓ #{pass.full_name}"
-        end
-      end
-
-      def self.run!(dir)
-        test_cases = locate_tests(dir)
-        total_count = get_test_count(test_cases)
-
-        puts "Total tests #{total_count}"
-
-        results = test_cases.each_with_object([]) do |test_case, memo|
-          memo.concat test_case.run!
-        end
-
-        puts "\n\nSummary\n-------"
-
-        failed_tests, passed_tests = results.partition(&:failed?)
-
-        report_passes(passed_tests)
-        report_failures(failed_tests)
-
-        exit failed_tests.any? ? 1 : 0
-      end
+      final_results
     end
   end
 end
