@@ -18,7 +18,7 @@ module BeakerTests
       end
     end
   end
-  
+
   module AfterAll
     class Sanity < BaseTest
       before_all do
