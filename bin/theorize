@@ -1,7 +1,18 @@
 #!/usr/bin/ruby
 
+require 'slop'
 require_relative '../src/theorem'
 
-path = ARGV[0] || '.'
+opts = Slop.parse do |o|
+  o.array '--require', 'files to require', delimiter: ','
+  o.string '-m', '--module', 'module (default: Theorem::Hypothesis)', default: 'Theorem::Hypothesis'
+  o.string '-h', '--harness', 'harness (default: Theorem::Hypothesis)', default: 'Theorem::Harness'
+  o.array '-p', '--publisher', 'publishers (default: Theorem::StdoutReporter)', delimiter: ',', default: ['Theorem::StdoutReporter']
+  o.string '-d', '--directory', 'directory to load tests (default: ".")', default: '.'
+  o.on '--help' do
+    puts o
+    exit
+  end
+end
 
-Theorem.run! Theorem::Hypothesis, path
+Theorem.run! opts[:directory], opts

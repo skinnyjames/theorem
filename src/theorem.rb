@@ -20,8 +20,27 @@ module Theorem
     end
   end
 
-  def self.run!(klass = Hypothesis, directory = '.', options = {})
-    klass.run!(directory, options)
+  def self.run!(directory, options)
+    options[:require].each do |file|
+      require file
+    end
+
+    raise StandardError, "Unknown Module: #{options[:module]}" unless defined? Object.const_get(options[:module])
+    raise StandardError, "Unknown Harness: #{options[:harness]}" unless defined? Object.const_get(options[:harness])
+
+    mod = Object.const_get(options[:module])
+    harness = Object.const_get options[:harness]
+    mod.include harness
+
+    options[:publisher].each do |publisher|
+      if defined? Object.const_get(publisher)
+        mod.include Object.const_get(publisher)
+      else
+        raise StandardError, "Unknown Publisher: #{publisher}"
+      end
+    end
+
+    mod.run!(directory, options)
   end
 
   module JsonReporter
@@ -38,7 +57,5 @@ module Theorem
 
   module Hypothesis
     include Control::Hypothesis
-    include Theorem::RetryHarness
-    include StdoutReporter
   end
 end
