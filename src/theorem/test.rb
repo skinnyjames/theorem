@@ -67,8 +67,8 @@ module Theorem
         obj = Class.new
         obj.include(control)
         obj.instance_eval &block if block
-        obj.instance_exec klass, opts do |experiment_klass, params|
-          @tests.concat experiment_klass.tests(**params)
+        obj.instance_exec self, klass, opts do |consumer, experiment_klass, params|
+          @tests.concat experiment_klass.tests(_experiment_namespace: consumer.to_s, **params)
         end
       end
 
