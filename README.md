@@ -363,7 +363,7 @@ module Hello
 end
 ```
 
-They can either be mixed in to the harness, or specified using the cli
+They can either be mixed in to the target module, or specified using the cli
 
 `theorem --publisher Hello::JsonReporter`
 

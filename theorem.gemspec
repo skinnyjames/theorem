@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.7.5'
   s.name        = 'theorem'
-  s.version     = '0.0.3'
+  s.version     = '1.0.0'
   s.licenses    = ['MIT']
   s.summary     = 'simple and extensible test library toolkit'
   s.description = 'simple and extensible test library toolkit'
@@ -19,5 +19,4 @@ Gem::Specification.new do |s|
   s.add_development_dependency 'rbs'
   s.add_development_dependency 'rspec-expectations'
   s.add_development_dependency 'rubocop'
-  s.add_development_dependency 'parallel'
 end

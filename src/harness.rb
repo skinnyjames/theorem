@@ -1,22 +1,12 @@
 # frozen_string_literal: true
 
 require_relative './theorem/harness'
-require 'parallel'
 
 # harness
 module Theorem
   # default test harness
   module Harness
     include Control::Harness
-  end
-
-  # parallel harness
-  module ParallelHarness
-    include Control::Harness
-
-    on_run do |tests|
-      Parallel.map(tests, in_threads: 6, &:run!).flatten
-    end
   end
 
   # module retry harness
