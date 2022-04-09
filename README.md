@@ -368,3 +368,78 @@ They can either be mixed in to the target module, or specified using the cli
 `theorem --publisher Hello::JsonReporter`
 
 you can include / specify as many publishers as you want.
+
+
+### Metadata api
+
+Tests can declare arbitrary keyword arguments which will be stored on the test as metadata
+
+```ruby
+class Test
+  include Theorem::Hypothesis
+  
+  test 'test with metadata', some: true, data: [:ok], here: ->(something) { puts something } do
+    raise StandardError, 'that is just too cool?'
+  end
+end
+```
+
+these can be processed by a harness
+
+```ruby
+# my_harness.rb
+require 'theorem'
+
+module MyHarness
+  include Theorem::Control::Harness
+
+  load_tests do |options|
+    registry.each do |test_class|
+      test_class.tests.each do |test|
+        test.metadata[:here]&.call("wow") if test.metadata[:data]&.include? :ok
+      end
+    end
+
+    registry
+  end
+end
+```
+
+and running `theorize --harness MyHarness --require my_harness.rb`
+
+```shell
+wow
+x
+❌ Test test with metadata
+Failure in Test test with metadata
+Error: that is just too cool?
+Backtrace:
+....
+```
+
+The theorize cli and default supports 2 arguments for metadata, `--include` and `--exclude`
+
+These will resolve to an array of tags that will filter the tests cases
+
+The default harness will process a tags argument on the test definition for this purpose
+
+```ruby
+class Test
+  include Theorem::Hypothesis
+  
+  test 'test with metadata', tags: %w[important metadata]do
+    #...
+  end
+  
+  test 'test with regular metadata', tags: %w[metadata] do
+    #...
+  end
+end
+```
+
+We can run `theorize --include important` to filter the available test cases this way, but this is a default implementation detail.
+
+You can process tags and additional metadata however you want by writing a harness.
+
+Note: The cli also supports a `--meta` flag to pass an arbitrary string to the harness
+
