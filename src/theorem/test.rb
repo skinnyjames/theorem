@@ -119,8 +119,11 @@ module Theorem
         results = []
         @tests.each do |test|
           error ||= run_before_each_beakers(test_case)
-          error ||= run_test(test, test_case)
-          error ||= run_after_each_beakers(test_case)
+          before_test_case = test_case.clone
+
+          error ||= run_test(test, before_test_case)
+
+          error ||= run_after_each_beakers(before_test_case)
 
           notary = test_case.notary.merge(test.notary)
 

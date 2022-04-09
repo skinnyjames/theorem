@@ -19,8 +19,8 @@ module BeakerTests
       @instance_variable = false
     end
 
-    test 'before all leaks state' do
-      expect(@instance_variable).to be(false)
+    test 'before all does not leak state' do
+      expect(@instance_variable).to be(true)
     end
 
     test 'instance blocks persist in the test' do
