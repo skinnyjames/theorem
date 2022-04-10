@@ -3,5 +3,26 @@ image: "ruby:latest"
 before_script:
   - bundle install
 
-test:
-  script: bundle exec theorize -d tests
+theorize:
+  stage: test
+  script: bundle exec ruby tests/arrangment.rb
+  artifacts:
+    paths:
+      - coverage/
+    reports:
+      cobertura: coverage/coverage.xml
+  coverage: '/\(\d+.\d+\%\) covered/'
+
+pages:
+  stage: deploy
+  dependencies:
+    - theorize
+  script:
+    - mv coverage/ public/
+  artifacts:
+    paths:
+      - public
+    expire_in: 30 days
+  only:
+    - main
+

@@ -39,9 +39,9 @@ module Theorem
           mod.add_to_registry(klass)
         end
 
-        mod.const_set(:Beaker, Beaker)
-        mod.const_set(:Test, Test)
-        mod.const_set(:CompletedTest, CompletedTest)
+        mod.const_set(:Beaker, Beaker) unless mod.const_defined?(:Beaker)
+        mod.const_set(:Test, Test) unless mod.const_defined?(:Test)
+        mod.const_set(:CompletedTest, CompletedTest) unless mod.const_defined?(:CompletedTest)
         mod.extend(Registry)
       end
     end

@@ -3,3 +3,4 @@ Gemfile.lock
 .bundle/
 *.gem
 runner_examples/
+coverage/

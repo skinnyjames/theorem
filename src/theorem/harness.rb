@@ -22,19 +22,6 @@ module Theorem
 
       # harness helpers
       module ClassMethods
-        DEFAULT_LOADER = ->(options) do
-          directory = options[:directory] || '.'
-
-          ExtendedDir.require_all("./#{directory}")
-
-          registry
-        end
-
-        DEFAULT_RUNNER = ->(tests, options) do
-          tests.each_with_object([]) do |test, memo|
-            memo.concat test.run!
-          end
-        end
 
         def load_tests(&block)
           @on_load_tests = block
@@ -45,11 +32,31 @@ module Theorem
         end
 
         def run_loader
-          @on_run || DEFAULT_RUNNER
+          @on_run || default_runner
         end
 
         def test_loader
-          @on_load_tests || DEFAULT_LOADER
+          @on_load_tests || default_loader
+        end
+
+        private
+
+        def default_loader
+          lambda do |options|
+            directory = options[:directory] || '.'
+
+            ExtendedDir.require_all("./#{directory}")
+
+            registry
+          end
+        end
+
+        def default_runner
+          lambda do |tests, options|
+            tests.each_with_object([]) do |test, memo|
+              memo.concat test.run!
+            end
+          end
         end
       end
     end
