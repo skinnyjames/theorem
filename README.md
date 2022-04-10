@@ -2,6 +2,8 @@
 
 A modern test library & runner toolkit
 
+[![Coverage report](https://gitlab.com/skinnyjames/theorem/badges/main/coverage.svg?job=theorize)](https://skinnyjames.gitlab.io/theorem/)
+
 ## installation
 
 `gem install theorem`
