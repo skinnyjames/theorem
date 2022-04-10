@@ -3,9 +3,10 @@
 require 'rspec/expectations'
 
 require 'simplecov'
+require 'simplecov-html'
 require 'simplecov-cobertura'
 
-SimpleCov.formatter = SimpleCov::Formatter::CoberturaFormatter
+SimpleCov.formatters = SimpleCov::Formatter::MultiFormatter.new([SimpleCov::Formatter::CoberturaFormatter, SimpleCov::Formatter::HTMLFormatter])
 SimpleCov.start do
   add_filter '/tests/'
 end
