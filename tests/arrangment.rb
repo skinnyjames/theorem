@@ -15,3 +15,14 @@ require_relative '../src/theorem'
 module Fixture
   include Theorem::Control::Hypothesis
 end
+
+Theorem.run!(
+  {
+    directory: '/tests/test',
+    require: [],
+    module: 'Theorem::Hypothesis',
+    harness: 'Theorem::Harness',
+    publisher: ['Theorem::StdoutReporter']
+  }
+)
+

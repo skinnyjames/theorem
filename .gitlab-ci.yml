@@ -4,7 +4,7 @@ before_script:
   - bundle install
 
 test:
-  script: bundle exec theorize -d tests
+  script: bundle exec ruby tests/arrangment.rb
   artifacts:
     reports:
       cobertura: coverage/coverage.xml
