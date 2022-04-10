@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require_relative './base'
+require_relative 'base'
 
 module Test
   # Test::Failures
@@ -108,6 +108,38 @@ module Test
       error = @results[0].error
       expect(error.message).to eql('first error')
       expect(error.class).to eql(StandardError)
+    end
+  end
+
+  class AfterAllFailures < Base
+    before_all do
+      klass = Class.new do
+        include Fixture
+
+        after_all do
+          raise StandardError, 'failure in after all hook'
+        end
+
+        test 'example' do
+          expect(true).to be(true)
+        end
+
+        test 'example 2' do
+          expect(true).to be(true)
+        end
+      end
+
+      @results = klass.run!
+    end
+
+    test 'failure in an after all hook will fail all the tests' do
+      aggregate_failures do
+        expect(@results.size).to be(2)
+        @results.each do |result|
+          expect(result.failed?).to be(true)
+          expect(result.error.message).to eql('failure in after all hook')
+        end
+      end
     end
   end
 

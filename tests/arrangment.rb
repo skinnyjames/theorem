@@ -19,7 +19,7 @@ end
 
 Theorem.run!(
   {
-    directory: '/tests/test',
+    directory: '/tests/theorem',
     require: [],
     module: 'Theorem::Hypothesis',
     harness: 'Theorem::Harness',
