@@ -1,3 +1,7 @@
+# frozen_string_literal: true
+
+require 'rspec/expectations'
+
 require 'simplecov'
 require 'simplecov-cobertura'
 
@@ -6,7 +10,6 @@ SimpleCov.start do
   add_filter '/tests/'
 end
 
-require 'rspec/expectations'
 require_relative '../src/theorem'
 
 module Fixture
