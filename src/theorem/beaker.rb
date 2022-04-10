@@ -9,6 +9,10 @@ module Theorem
         @ctx = ctx
       end
 
+      def name
+        @test.name
+      end
+
       def run!
         @test.run!(@ctx)
       end

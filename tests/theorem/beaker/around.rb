@@ -31,6 +31,29 @@ module BeakerTests
       end
     end
 
+    class FixtureTest < BaseTest
+      before_all do
+        klass = Class.new do
+          include RSpec::Matchers
+          include Fixture
+          around do |test|
+            expect(test.name).to eql('test around')
+            test.run!
+          end
+
+          test 'test around' do
+            expect(true).to be(true)
+          end
+        end
+
+        @result = klass.run!.dig(0)
+      end
+
+      test 'result should be good' do
+        expect(@result.failed?).to be(false), @result.error
+      end
+    end
+
     class FailureFromHook < BeakerTests::BaseTest
       before_all do
         klass = Class.new do
