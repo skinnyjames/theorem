@@ -8,4 +8,4 @@ test:
   artifacts:
     reports:
       cobertura: coverage/coverage.xml
-  coverage: "/\(\d+.\d+\%\) covered/"
+  coverage: '/\(\d+.\d+\%\) covered/'
