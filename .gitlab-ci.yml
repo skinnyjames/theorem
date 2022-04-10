@@ -4,8 +4,8 @@ before_script:
   - bundle install
 
 test:
-  coverage: "/\(\d+.\d+\%\) covered/"
   script: bundle exec theorize -d tests
   artifacts:
     reports:
       cobertura: coverage/coverage.xml
+  coverage: "/\(\d+.\d+\%\) covered/"
