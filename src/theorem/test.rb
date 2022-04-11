@@ -118,16 +118,24 @@ module Theorem
 
         results = []
         @tests.each do |test|
+          test_start = clock_time
+
+          publish_test_start(test)
+
           error ||= run_before_each_beakers(test_case)
+
           before_test_case = test_case.clone
-
           error ||= run_test(test, before_test_case)
-
           error ||= run_after_each_beakers(before_test_case)
+
+
+          test_end = clock_time
+          duration = test_end - test_start
 
           notary = test_case.notary.merge(test.notary)
 
-          completed_test = CompletedTest.new(test, error, notary: notary.dump)
+
+          completed_test = CompletedTest.new(test, error, duration: duration, notary: notary.dump)
           publish_test_completion(completed_test)
           results << completed_test
         end
@@ -147,6 +155,10 @@ module Theorem
       end
 
       private
+
+      def clock_time
+        Process.clock_gettime(Process::CLOCK_MONOTONIC)
+      end
 
       def run_test(test, test_case)
         if @around.empty?
@@ -219,11 +231,16 @@ module Theorem
       end
 
       def publish_test_completion(completed_test)
-        control.completed_test_subscribers.each do |subscriber|
+        control.test_finished_subscribers.each do |subscriber|
           subscriber.call(completed_test)
         end
       end
 
+      def publish_test_start(test)
+        control.test_started_subscribers.each do |subscriber|
+          subscriber.call(test)
+        end
+      end
     end
   end
 end

@@ -11,9 +11,21 @@ module Theorem
         mod.define_singleton_method :included do |inner|
           inner.define_singleton_method :run! do |options: {}|
             tests = inner.instance_exec options, &mod.test_loader
+
+            inner.suite_started_subscribers.each do |subscriber|
+              subscriber.call tests.map(&:tests).flatten.map do |test|
+                { name: test.name, metadata: test.metadata }
+              end
+            end
+
+            starting = Process.clock_gettime(Process::CLOCK_MONOTONIC)
             results = inner.instance_exec tests, options, &mod.run_loader
-            inner.completed_suite_subscribers.each do |subscriber|
-              subscriber.call(results)
+            ending = Process.clock_gettime(Process::CLOCK_MONOTONIC)
+
+            duration = ending - starting
+
+            inner.suite_finished_subscribers.each do |subscriber|
+              subscriber.call(results, duration)
             end
             exit results.any?(&:failed?) ? 1 : 0
           end

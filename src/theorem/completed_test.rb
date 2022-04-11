@@ -4,12 +4,13 @@ module Theorem
   module Control
     # error class
     class CompletedTest
-      attr_reader :test, :error
+      attr_reader :test, :error, :duration
 
-      def initialize(test, error = nil, notary:)
+      def initialize(test, error = nil, notary:, duration: nil)
         @test = test
         @error = error
         @notary = notary
+        @duration = duration
       end
 
       def notary

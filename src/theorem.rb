@@ -1,8 +1,7 @@
 require_relative 'theorem/hypothesis'
 require_relative 'harness'
 require_relative 'experiment'
-require_relative 'stdout_reporter'
-
+require_relative 'publishers/stdout_reporter'
 require_relative 'theorem/harness'
 require 'json'
 
@@ -43,18 +42,6 @@ module Theorem
     end
 
     mod.run!(options: options)
-  end
-
-  module JsonReporter
-    extend Control::Reporter
-
-    subscribe :on_completed_suite do |results|
-      results = results.map do |result|
-        { name: result.full_name, failed: result.failed? }
-      end
-      puts results.to_json
-      puts "\n\n"
-    end
   end
 
   module Hypothesis
