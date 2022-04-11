@@ -68,7 +68,7 @@ module Theorem
           end
         end
         hash = {}
-        hash[:percentile] = (below.size.to_f / sorted.size.to_f) * 100
+        hash[:percentile] = (below.size.to_f / (sorted.size.to_f + 1)) * 100
         hash[:test] = test
         arr << hash
       end
@@ -90,12 +90,12 @@ module Theorem
       return 'Not run' if test[:test].duration.nil?
 
       str = "#{format('%<num>0.10f', num: test[:test].duration)} seconds"
-      rank = ((test[:percentile] / 100) * (test[:test].duration + 1)) * 100
-      if rank < 5
+      rank = test[:percentile]
+      if rank < 10
         str.red
-      elsif rank > 95
+      elsif rank > 90
         str.green
-      elsif rank < 10
+      elsif rank < 30
         str.yellow
       else
         str
