@@ -58,10 +58,14 @@ module Theorem
     end
 
     def inflate_percentiles(tests)
-      sorted = tests.sort_by(&:duration)
+      sorted = tests.reject { |t| t.duration.nil? }.sort_by(&:duration)
       tests.each_with_object([]) do |test, arr|
         _, below = sorted.partition do |duration_test|
-          test.duration >= duration_test.duration
+          if test.duration.nil?
+            true
+          else
+            test.duration >= duration_test.duration
+          end
         end
         hash = {}
         hash[:percentile] = (below.size.to_f / sorted.size.to_f) * 100
@@ -83,6 +87,8 @@ module Theorem
     end
 
     def duration(test)
+      return 'Not run' if test[:test].duration.nil?
+
       str = "#{format('%<num>0.10f', num: test[:test].duration)} seconds"
       rank = ((test[:percentile] / 100) * (test[:test].duration + 1)) * 100
       if rank < 5
@@ -98,7 +104,7 @@ module Theorem
 
     def report_failures(tests)
       tests.each do |failure|
-        puts "Failure in #{failure.full_name}\nError: #{failure.error.message.to_s.red}\nBacktrace:\n------\n#{failure.error.backtrace.map(&:red).join("\n")}"
+        puts "\n\nFailure in #{failure.full_name}\nError: #{failure.error.message.to_s.red}\nBacktrace:\n------\n#{failure.error.backtrace.map(&:red).join("\n")}"
       end
     end
   end

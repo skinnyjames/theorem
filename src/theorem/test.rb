@@ -128,19 +128,16 @@ module Theorem
           error ||= run_test(test, before_test_case)
           error ||= run_after_each_beakers(before_test_case)
 
-
-          test_end = clock_time
-          duration = test_end - test_start
-
           notary = test_case.notary.merge(test.notary)
 
+          duration = clock_time - test_start
 
           completed_test = CompletedTest.new(test, error, duration: duration, notary: notary.dump)
           publish_test_completion(completed_test)
           results << completed_test
         end
 
-        after_failures = run_after_all_beakers(duplicate_test_case)
+        after_failures = run_after_all_beakers(results, duplicate_test_case)
 
         if after_failures.any?
           return after_failures
@@ -175,7 +172,7 @@ module Theorem
         end
       end
 
-      def run_after_all_beakers(test_case)
+      def run_after_all_beakers(results, test_case)
         @after_all.run!(test_case)
 
         @parent_after_all&.each do |beaker|
@@ -186,9 +183,12 @@ module Theorem
       rescue Exception => error
         Theorem.handle_exception(error)
 
-        @tests.map do |test|
-          CompletedTest.new(test, error, notary: test_case.notary)
+        results.each do |test|
+          test.error = error
+          test.notary = test_case.notary
         end
+
+        results
       end
 
       def run_after_each_beakers(test_case)
