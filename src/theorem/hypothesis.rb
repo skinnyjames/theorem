@@ -4,6 +4,7 @@ require_relative 'completed_test'
 require_relative 'beaker'
 require_relative 'registry'
 require_relative 'test'
+require_relative 'let'
 
 module Theorem
   module Control
@@ -25,6 +26,7 @@ module Theorem
             block.call(@notary)
           end
 
+          klass.extend Let
           klass.extend ClassMethods
           klass.instance_eval do
             @before_all ||= Beaker.new
