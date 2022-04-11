@@ -94,8 +94,8 @@ class Example
   end
 
   test 'asserts mutations in hooks' do
-    expect(@before_all).to eql(true) # before all leaks state into the cases
-    expect(@before_each).to be(true) # before each does not
+    expect(@before_all).to eql(true)
+    expect(@before_each).to be(true)
     expect(@browser).to be(nil)
     expect(@after_all).to be(nil)
     expect(@after_each).to be(nil)
@@ -337,7 +337,6 @@ Hello::World.run!
 
 now we can run our tests with `ruby hello_world.rb`
 
-Easy.
 
 ### Publishers / Reporters
 
@@ -494,7 +493,7 @@ end
 
 ```
 
-When the test emits results to the publisher, the notations will as a hash on the CompletedTest result
+When the test emits results to the publisher, the notations will be provided as a hash on the CompletedTest result
 
 We can access them with `result.notary`
 
