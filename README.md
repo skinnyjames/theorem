@@ -109,7 +109,7 @@ end
 `each_with` & `all_with` (aliased from `let` and `let_it_be`) are RSpec and Test-Prof type helpers to 
 declare arrangement with methods instead of instance variables
 
-`each_with` declares methods in a before_each hook, and all_with declares methods in a before_all hook.
+`each_with` declares methods in a before_each hook, and `all_with` declares methods in a before_all hook.
 
 ```ruby
 class EachWithTest 
