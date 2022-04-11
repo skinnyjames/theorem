@@ -28,31 +28,17 @@ module Theorem
         registry << klass
       end
 
-      def on_extra_event(&block)
-        @extra_events ||= []
-        @extra_events << block
-      end
+      %i[suite_started test_started test_finished suite_finished].each do |method|
+        define_method method do |&block|
+          instance_variable_set("@#{method}_subscribers", []) unless instance_variable_get("@#{method}_subscribers")
+          instance_variable_get("@#{method}_subscribers").append(block)
+        end
 
-      def extra_event_subscribers
-        @extra_events || []
-      end
+        define_method "#{method}_subscribers" do
+          return [] unless instance_variable_get("@#{method}_subscribers")
 
-      def on_completed_test(&block)
-        @completed_tests ||= []
-        @completed_tests << block
-      end
-
-      def completed_test_subscribers
-        @completed_tests || []
-      end
-
-      def on_completed_suite(&block)
-        @completed_suites ||= []
-        @completed_suites << block
-      end
-
-      def completed_suite_subscribers
-        @completed_suites || []
+          instance_variable_get("@#{method}_subscribers")
+        end
       end
     end
   end

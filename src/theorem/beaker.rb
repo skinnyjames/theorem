@@ -58,6 +58,10 @@ module Theorem
         end
       end
 
+      def empty?
+        @state.empty?
+      end
+
       def reverse_prepare(&block)
         @state.unshift block
       end
