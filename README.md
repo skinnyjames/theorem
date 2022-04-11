@@ -104,6 +104,25 @@ class Example
 end
 ```
 
+### each_with / all_with
+
+`each_with` & `all_with` (aliased from `let` and `let_it_be`) are RSpec and Test-Prof type helpers to 
+declare arrangement with methods instead of instance variables
+
+`each_with` declares methods in a before_each hook, and all_with declares methods in a before_all hook.
+
+```ruby
+class EachWithTest 
+  each_with(:foo) { :bar }
+  
+  each_with(:buzz) { foo }
+  
+  test 'each_with returns bar' do
+    expect(buzz).to eql(:bar)
+  end
+end
+```
+
 ### Experiments
 
 Experiments are reusable tests cases that can be invoked with parameters and their own arrangement

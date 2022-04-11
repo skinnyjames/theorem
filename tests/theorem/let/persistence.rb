@@ -76,18 +76,18 @@ module Let
       @car = :toyota
     end
 
-
     before_each do
       @color = :blue
     end
 
     let_it_be(:user) { @user }
-    let(:color) { @color }
+    each_with(:color) { @color }
     let(:dwelling) { @dwelling }
-    let_it_be(:car) { @car }
+    all_with(:car) { @car }
 
+    let(:other) { dwelling }
 
-    test 'let can access instance vars' do
+    test 'let can access instance vars and overrides instance methods' do
       expect(user).to eql(:bob)
       expect(color).to eql(:blue)
     end
@@ -95,6 +95,14 @@ module Let
     test 'and reverse' do
       expect(dwelling).to eql(:apartment)
       expect(car).to eql(:toyota)
+    end
+
+    test 'can nest lets' do
+      expect(other).to eql(:apartment)
+    end
+
+    def user
+      :buddy
     end
   end
 end

@@ -4,6 +4,7 @@ module Theorem
   module Control
     # compatibility with let in rspec
     module Let
+
       def let(name, &block)
         setup_let(name, &block)
         instance_exec @let_registry do |registry|
@@ -20,6 +21,7 @@ module Theorem
           end
         end
       end
+      alias_method :each_with, :let
 
       def let_it_be(name, &block)
         setup_let(name, :let_it_be, &block)
@@ -37,6 +39,7 @@ module Theorem
           end
         end
       end
+      alias_method :all_with, :let_it_be
 
       private
 
