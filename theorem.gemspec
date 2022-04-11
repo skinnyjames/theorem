@@ -1,7 +1,7 @@
 Gem::Specification.new do |s|
   s.required_ruby_version = '>= 2.7.5'
   s.name        = 'theorem'
-  s.version     = '1.2.1'
+  s.version     = '1.2.2'
   s.licenses    = ['MIT']
   s.summary     = 'simple and extensible test library toolkit'
   s.description = 'simple and extensible test library toolkit'
