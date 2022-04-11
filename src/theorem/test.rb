@@ -110,6 +110,9 @@ module Theorem
         before_failures = run_before_all_beakers(test_case)
 
         if before_failures.any?
+          before_failures.each do |failure|
+            publish_test_completion(failure)
+          end
           return before_failures
         end
 
@@ -133,19 +136,26 @@ module Theorem
           duration = clock_time - test_start
 
           completed_test = CompletedTest.new(test, error, duration: duration, notary: notary.dump)
-          publish_test_completion(completed_test)
+
+          # publish_early if there are no after_all beakers
+          publish_test_completion(completed_test) if @after_all.empty?
+
           results << completed_test
         end
 
         after_failures = run_after_all_beakers(results, duplicate_test_case)
 
         if after_failures.any?
+          after_failures.each do |failure|
+            publish_test_completion(failure)
+          end
           return after_failures
         end
 
         results.each do |completed_test|
           # merge any after_all notations
           completed_test.notary.merge!(duplicate_test_case.notary.dump)
+          publish_test_completion(completed_test) unless @after_all.empty?
         end
 
         results
