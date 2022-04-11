@@ -346,6 +346,13 @@ Publishers are modules that extend `Theorem::Control::Reporter`
 
 They can subscribe to only the available events that they are interested in.
 
+Available events
+
+* suite_started
+* test_started
+* test_finished
+* suite_finished
+
 ```ruby
 require 'json'
 
@@ -354,7 +361,7 @@ module Hello
     extend Theorem::Control::Reporter
     
     # on_completed_suite yields an array of CompletedTests from the run
-    subscribe :on_completed_suite do |results|
+    subscribe :suite_finished do |results|
       results = results.map do |result|
         { name: result.full_name, failed: result.failed? }
       end
