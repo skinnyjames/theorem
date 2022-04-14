@@ -50,6 +50,14 @@ module Theorem
         @state = []
       end
 
+      def reverse_run!(ctx)
+        ctx.instance_exec @state.reverse, ctx do |state, ctx|
+          state.each do |b|
+            ctx.instance_eval &b
+          end
+        end
+      end
+
       def run!(ctx)
         ctx.instance_exec @state, ctx do |state, ctx|
           state.each do |b|
@@ -62,8 +70,8 @@ module Theorem
         @state.empty?
       end
 
-      def reverse_prepare(&block)
-        @state.unshift block
+      def concat(beaker)
+        @state.concat beaker.instance_variable_get('@state')
       end
 
       def prepare(&block)
