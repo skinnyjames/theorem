@@ -33,19 +33,20 @@ module Theorem
     # module
     module ClassMethods
       def inherited(klass)
+        klass.extend ClassMethods
         klass.include(control)
         klass.instance_exec self do |me|
           @parent_before_all ||= []
-          @parent_before_all << me.before_all_beaker
+          @before_all.concat me.before_all_beaker
 
           @parent_before_each ||= []
-          @parent_before_each << me.before_each_beaker
+          @before_each.concat me.before_each_beaker
 
           @parent_after_each ||= []
-          @parent_after_each.unshift me.after_each_beaker
+          @after_each.concat me.after_each_beaker
 
           @parent_after_all ||= []
-          @parent_after_all.unshift me.after_all_beaker
+          @after_all.concat me.after_all_beaker
         end
         super
       end
@@ -63,11 +64,11 @@ module Theorem
       end
 
       def after_each(&block)
-        @after_each.reverse_prepare(&block)
+        @after_each.prepare(&block)
       end
 
       def after_all(&block)
-        @after_all.reverse_prepare(&block)
+        @after_all.prepare(&block)
       end
 
       def experiments(klass, **opts, &block)
@@ -104,6 +105,8 @@ module Theorem
       end
 
       def run!
+        return [] if @tests.empty?
+
         test_case = new
 
         # run before all beakers to create state in test case
@@ -183,11 +186,7 @@ module Theorem
       end
 
       def run_after_all_beakers(results, test_case)
-        @after_all.run!(test_case)
-
-        @parent_after_all&.each do |beaker|
-          beaker.run!(test_case)
-        end
+        @after_all.reverse_run!(test_case)
 
         []
       rescue Exception => error
@@ -202,11 +201,7 @@ module Theorem
       end
 
       def run_after_each_beakers(test_case)
-        @after_each.run!(test_case)
-
-        @parent_after_each&.each do |beaker|
-          beaker.run!(test_case)
-        end
+        @after_each.reverse_run!(test_case)
         nil
       rescue Exception => error
         Theorem.handle_exception(error)
@@ -215,9 +210,6 @@ module Theorem
       end
 
       def run_before_each_beakers(test_case)
-        @parent_before_each&.each do |beaker|
-          beaker.run!(test_case)
-        end
         @before_each.run!(test_case)
         nil
       rescue Exception => error
@@ -227,9 +219,6 @@ module Theorem
       end
 
       def run_before_all_beakers(test_case)
-        @parent_before_all&.each do |beaker|
-          beaker.run!(test_case)
-        end
         @before_all.run!(test_case)
         []
       rescue Exception => error

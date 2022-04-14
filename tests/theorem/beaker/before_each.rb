@@ -57,6 +57,10 @@ module BeakerTests
 
     # Inherit state
     class SecondState < BaseState
+      before_each do
+        expect(@fixture).to eql(:base)
+      end
+
       test 'state is inherited' do
         expect(@fixture).to eql(:base)
       end

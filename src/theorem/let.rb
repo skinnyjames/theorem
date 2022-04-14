@@ -4,7 +4,6 @@ module Theorem
   module Control
     # compatibility with let in rspec
     module Let
-
       def let(name, &block)
         setup_let(name, &block)
         instance_exec @let_registry do |registry|
@@ -25,7 +24,6 @@ module Theorem
 
       def let_it_be(name, &block)
         setup_let(name, :let_it_be, &block)
-        something = binding
         instance_exec @let_registry do |registry|
           @before_all.prepare do
             define_singleton_method name do
