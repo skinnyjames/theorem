@@ -39,9 +39,6 @@ module Tests
       let(:publisher) do
         mod = Object.const_set("Mod#{SecureRandom.hex(5)}", Module.new)
         mod.extend Theorem::Control::Reporter
-        mod.subscribe :test_finished do |test|
-          test.notary[:screenshot]["#{tmp}/#{test.full_name}"]
-        end
         mod
       end
 
@@ -56,6 +53,8 @@ module Tests
       let(:fixture) do
         Class.new do
           attr_reader :closed
+
+          attr_reader :urls
 
           def initialize
             @closed = false
@@ -100,13 +99,13 @@ module Tests
             @fixture = parent_fixture.new
           end
 
-          after_each do
-            notate do |memo|
-              memo.write(:screenshot, lambda do |path|
-                @fixture.screenshot(path)
-                @fixture.close
-              end)
-            end
+          after_each do |error:|
+            expect(error).to be(nil)
+            @fixture.screenshot 'stuff'
+          end
+
+          after_all do
+            @fixture.close
           end
         end
       end
@@ -119,6 +118,10 @@ module Tests
 
           test 'asserts url is google' do
             expect(@fixture.url).to include('google')
+          end
+
+          test 'asserts 2 urls' do
+            expect(@fixture.urls.size).to be(2)
           end
         end
       end
@@ -150,9 +153,9 @@ module Tests
       test 'no tests should fail' do
         results = sandbox.run!
         aggregate_failures do
-          expect(results.size).to be(3)
+          expect(results.size).to be(4)
           results.each do |result|
-            expect(result.failed?).to be(false)
+            expect(result.failed?).to be(false), result.error&.message
             expect(result.name).to include('asserts')
           end
         end
