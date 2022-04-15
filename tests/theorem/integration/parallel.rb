@@ -17,7 +17,7 @@ module Tests
       let(:tmp) { Dir.mktmpdir }
 
       let(:harness) do
-        LOAD_TESTS = -> { test1; test2 }
+        LOAD_TESTS = -> { test1; test2; test3 }
 
         mod = Object.const_set("Mod#{SecureRandom.hex(5)}", Module.new)
         mod.include Theorem::Control::Harness
@@ -150,6 +150,7 @@ module Tests
       test 'no tests should fail' do
         results = sandbox.run!
         aggregate_failures do
+          expect(results.size).to be(3)
           results.each do |result|
             expect(result.failed?).to be(false)
             expect(result.name).to include('asserts')
