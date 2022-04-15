@@ -50,6 +50,11 @@ module Theorem
         @state = []
       end
 
+      def clone
+        @state.map!(&:clone)
+        self
+      end
+
       def reverse_run!(ctx)
         ctx.instance_exec @state.reverse, ctx do |state, ctx|
           state.each do |b|

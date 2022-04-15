@@ -27,7 +27,8 @@ module Theorem
             inner.suite_finished_subscribers.each do |subscriber|
               subscriber.call(results, duration)
             end
-            exit results.any?(&:failed?) ? 1 : 0
+
+            inner.instance_exec results, &mod.run_exit
           end
         end
       end
@@ -39,8 +40,16 @@ module Theorem
           @on_load_tests = block
         end
 
+        def on_exit(&block)
+          @on_exit = block
+        end
+
         def on_run(&block)
           @on_run = block
+        end
+
+        def run_exit
+          @on_exit || default_exit
         end
 
         def run_loader
@@ -52,6 +61,12 @@ module Theorem
         end
 
         private
+
+        def default_exit
+          lambda do |results|
+            exit results.any?(&:failed?) ? 1 : 0
+          end
+        end
 
         def default_loader
           lambda do |options|

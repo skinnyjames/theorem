@@ -37,16 +37,16 @@ module Theorem
         klass.include(control)
         klass.instance_exec self do |me|
           @parent_before_all ||= []
-          @before_all.concat me.before_all_beaker
+          @before_all.concat me.before_all_beaker.clone
 
           @parent_before_each ||= []
-          @before_each.concat me.before_each_beaker
+          @before_each.concat me.before_each_beaker.clone
 
           @parent_after_each ||= []
-          @after_each.concat me.after_each_beaker
+          @after_each.concat me.after_each_beaker.clone
 
           @parent_after_all ||= []
-          @after_all.concat me.after_all_beaker
+          @after_all.concat me.after_all_beaker.clone
         end
         super
       end
