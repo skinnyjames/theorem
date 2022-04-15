@@ -25,7 +25,7 @@ module Theorem
 
       def edit(key, &block)
         data = read(key)
-        block.call(data)
+        data = block.call(data)
         write(key, data)
       end
     end
