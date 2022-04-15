@@ -497,7 +497,7 @@ class Test
   before_each do
     notate do |meta|
       meta.edit('before_all') do |string|
-        string << " and again!"
+        "#{string} and again!"
       end
     end
   end

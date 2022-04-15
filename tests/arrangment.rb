@@ -17,6 +17,13 @@ module Fixture
   include Theorem::Control::Hypothesis
 end
 
+module Tests
+  class Base
+    include Theorem::Hypothesis
+    include RSpec::Matchers
+  end
+end
+
 Theorem.run!(
   {
     directory: '/tests/theorem',
