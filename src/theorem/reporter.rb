@@ -7,7 +7,8 @@ module Theorem
       def self.extended(mod)
         mod.extend(mod)
         mod.define_singleton_method :included do |root|
-          mod.subscriptions.each do |subscription, handler|
+          subscriptions = mod.subscriptions || []
+          subscriptions.each do |subscription, handler|
             mod.instance_exec root, subscription, handler do |root, sub, handle|
               root.send(sub, &handle)
             end
