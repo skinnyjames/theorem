@@ -50,10 +50,15 @@ module Theorem
         @state = []
       end
 
-      def reverse_run!(ctx)
-        ctx.instance_exec @state.reverse, ctx do |state, ctx|
+      def clone
+        @state.map!(&:clone)
+        self
+      end
+
+      def reverse_run!(ctx, **params)
+        ctx.instance_exec @state.reverse, ctx, params do |state, ctx, params|
           state.each do |b|
-            ctx.instance_eval &b
+            ctx.instance_exec **params, &b
           end
         end
       end

@@ -37,16 +37,16 @@ module Theorem
         klass.include(control)
         klass.instance_exec self do |me|
           @parent_before_all ||= []
-          @before_all.concat me.before_all_beaker
+          @before_all.concat me.before_all_beaker.clone
 
           @parent_before_each ||= []
-          @before_each.concat me.before_each_beaker
+          @before_each.concat me.before_each_beaker.clone
 
           @parent_after_each ||= []
-          @after_each.concat me.after_each_beaker
+          @after_each.concat me.after_each_beaker.clone
 
           @parent_after_all ||= []
-          @after_all.concat me.after_all_beaker
+          @after_all.concat me.after_all_beaker.clone
         end
         super
       end
@@ -132,7 +132,7 @@ module Theorem
 
           before_test_case = test_case.clone
           error ||= run_test(test, before_test_case)
-          error ||= run_after_each_beakers(before_test_case)
+          error ||= run_after_each_beakers(before_test_case, error: error)
 
           notary = test_case.notary.merge(test.notary)
 
@@ -200,8 +200,8 @@ module Theorem
         results
       end
 
-      def run_after_each_beakers(test_case)
-        @after_each.reverse_run!(test_case)
+      def run_after_each_beakers(test_case, **params)
+        @after_each.reverse_run!(test_case, **params)
         nil
       rescue Exception => error
         Theorem.handle_exception(error)
